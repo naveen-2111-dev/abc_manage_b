@@ -2,10 +2,10 @@ import { RegisterModel } from "./register.model";
 import { registerSchema } from "./register.schema";
 
 export class RegisterService {
-    async register(name: string, email: string, password: string) {
+    async register(name: string, email: string, password: string, dept: string) {
         const registerModel = new RegisterModel(name, email, password);
 
-        const payload = { name, email, password };
+        const payload = { name, email, password, dept };
 
         const validation = await registerSchema.safeParseAsync(payload);
 

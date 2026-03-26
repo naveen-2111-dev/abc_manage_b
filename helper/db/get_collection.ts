@@ -1,7 +1,10 @@
 import clientPromise from "./mongo_client";
 
 export enum Collection {
-    USER = "users"
+    USER = "users",
+    EVENTS = "events",
+    RSVPS = "rsvps",
+    EVENT_FEEDBACK = "event_feedback"
 }
 
 async function connect() {
