@@ -1,0 +1,184 @@
+openapi: 3.0.3
+info:
+  title: ABC Manage
+  version: 1.0.0
+  description: API documentation.
+
+servers:  
+  - url: http://localhost:3000
+
+paths:
+  /api/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterSuccessResponse'
+        '400':
+          description: Registration failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/login:
+    post:
+      tags:
+        - Auth
+      summary: Authenticate user
+      description: Authenticates a user and sets HTTP-only token cookies.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication succeeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccessResponse'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Refresh session token
+      description: Refreshes the access token using the `refreshToken` cookie. Sets new `token` cookie (httpOnly).
+      responses:
+        '200':
+          description: Refresh token processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshSuccessResponse'
+        '400':
+          description: No refresh token cookie provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 1
+          example: Ada Lovelace
+        email:
+          type: string
+          format: email
+          example: ada@example.com
+        password:
+          type: string
+          minLength: 6
+          example: s3cur3P@ss
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: ada@example.com
+        password:
+          type: string
+          minLength: 6
+          example: s3cur3P@ss
+
+    LoginSuccessResponse:
+      type: object
+      required:
+        - id
+        - email
+        - role
+      properties:
+        id:
+          type: string
+          example: 67e2aef2d2a5a5f0d79a12cd
+        email:
+          type: string
+          format: email
+          example: ada@example.com
+        role:
+          type: string
+          example: member
+
+    RegisterSuccessResponse:
+      type: object
+      required:
+        - message
+        - user
+      properties:
+        message:
+          type: string
+          example: User registered successfully
+        user:
+          $ref: '#/components/schemas/RegisterInsertResult'
+
+    RegisterInsertResult:
+      type: object
+      description: MongoDB insert result returned by register service.
+      properties:
+        acknowledged:
+          type: boolean
+          example: true
+        insertedId:
+          oneOf:
+            - type: string
+            - type: object
+              additionalProperties: true
+
+    RefreshSuccessResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Access token refreshed
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Registration failed: User with this email already exists"
