@@ -1,11 +1,15 @@
+import Image from "next/image";
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-black text-white">
 
-      <img
+      <Image
         src="/404.png"
         alt="crashed rocket"
-        className="w-40 mb-6 animate-ping"
+        width={100}
+        height={100}
+        className="animate-ping"
       />
     </div>
   );

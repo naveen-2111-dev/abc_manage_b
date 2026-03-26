@@ -3,7 +3,7 @@ import { registerSchema } from "./register.schema";
 
 export class RegisterService {
     async register(name: string, email: string, password: string, dept: string) {
-        const registerModel = new RegisterModel(name, email, password);
+        const registerModel = new RegisterModel(name, email, password, dept);
 
         const payload = { name, email, password, dept };
 
