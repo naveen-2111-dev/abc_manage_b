@@ -5,8 +5,8 @@ import { RegisterInput } from "./register.schema";
 export class RegisterModel {
     private readonly input: RegisterInput;
 
-    constructor(name: string, email: string, password: string) {
-        this.input = { name, email, password };
+    constructor(name: string, email: string, password: string, dept: string) {
+        this.input = { name, email, password, dept };
     }
 
     async register() {
